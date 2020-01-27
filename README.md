@@ -1,1 +1,2 @@
 # ProjetDepartement
+function f(x)
