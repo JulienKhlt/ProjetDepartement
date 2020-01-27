@@ -1,3 +1,3 @@
 function f(x)
-    x+47
+    x+24
 end
