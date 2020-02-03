@@ -1,4 +1,4 @@
-function parser_import(file_path, hasheader=true, separator=',')
+function parser_import(file_path, hasheader=true, separator=';')
     i = 1 + hasheader
     open(file_path) do f
         content = readlines(f)
