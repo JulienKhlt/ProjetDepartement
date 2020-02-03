@@ -14,6 +14,17 @@ proba=ones(nbvols,itparvol)
 
 nb_sommet=4
 
+function ver_tuple_liste(l,a,b)
+    #verifie si un tuple (a,b) et dans une liste
+    n=length(l)
+    for i in 1:(n-1)
+        if (l[i]==a && l[i+1]==b)
+            return true
+        end
+    end
+    return false
+end
+
 function lecture_itin()
     #Pour chaque leg j, itin_leg[i][j] vaut 1 si l'itinéraire i utlise le leg j
     n=length(Itineraires)
@@ -28,11 +39,21 @@ function lecture_itin()
         end
         append!(itin_leg,[l])
     end
-
-    #Une fois ce tableau obtenu, on construit leg_int qui pour chaque leg (i,j), contient
+    #Une fois ce tableau obtenu, on construit leg_itin qui pour chaque leg (i,j), contient
     #tous les itinéraires qui contiennent ce leg
-
-    return itin_leg
+    leg_itin=[]
+    for i in 1:leg
+        l=[]
+        dep=Capacites[i][2]
+        arr=Capacites[i][3]
+        for j in 1:nbvols
+            if ver_tuple_liste(Itineraires[2*j],dep,arr)
+                append!(l,j)
+            end
+        end
+        append!(leg_itin,[l])
+    end
+    return leg_itin
 end
 
 function lecture_capa()
@@ -63,6 +84,8 @@ function gestion_cap()
     cap=lecture_capa()
     demande_pers=lecture_demande()
     L=sum(demande_pers[:,2:itparvol],dims=2)
+    #Cela donne un tableau où le i eme nombre est le
+    #nombre de personnes empruntant l'itinéraire i
     return L
 end
 
