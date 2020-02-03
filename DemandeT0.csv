@@ -1,0 +1,11 @@
+﻿demande à t0;depart;arrivee;demande;beta i (-1=famille, -2 =business man);itineraires eco associes;itineraires business associes;;
+a;1;3;30;-1;1;2;
+b;1;3;5;-2;1;2;
+c;1;4;40;-1;3;4;
+d ;1;4;10;-2;3;4;
+e;2;3;50;-1;5;6;
+f;2;3;10;-2;5;6;
+g;2;4;50;-1;7;8;
+h;2;4;10;-2;7;8;
+i;3;4;30;-1;9;10;
+j;3;4;5;-2;9;10;
