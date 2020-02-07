@@ -1,22 +1,26 @@
-A = parser_import("Itineraire_escales_prix.csv")
+A = parser_import("Itineraire_escales_prix_temps.csv")
 B = parser_chiffre(A)
 
-function prix_alpha(B)
+
+
+function prix_alpha(B,t)
     L=[]
     C=[]
     #beta=[]
     for i in 1:length(B)
-        append!(L,B[i][6])
+        append!(L,B[i][6+t])
         append!(C,B[i][5])
         #append!(beta,B[i][])
     end
     return L,C
 end
+#C correspond à la liste des alpha
+#L la liste des prix
 
 #liste des prix
 #liste des alpha
 #liste des beta
-L1,C1 = prix_alpha(B)
+L1,C1 = prix_alpha(B, 0)
 
 
 #beta
