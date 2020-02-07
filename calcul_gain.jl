@@ -1,22 +1,24 @@
 #using parser
 
-Itineraires=parser_import("Itineraire_escales_prix.csv")
-Demande=parser_import("Demandes2.csv")
-Capacites=parser_import("Capacites2.csv")
+Itineraires = parser_import("Itineraire_escales_prix.csv")
+Demande = parser_import("Demandes2.csv")
+Capacites = parser_import("Capacites2.csv")
 
-nbvols=round(Int,length(Demande)/2)
-itparvol=3
-leg=length(Capacites)
+nbclasse = 2
+
+nbvols = round(Int,length(Demande) / nbclasse)
+itparvol = 3
+leg = length(Capacites)
 #En comptant le choix de ne pas acheter
 
-prix=zeros(nbvols,itparvol)
-proba=ones(nbvols,itparvol)
+prix = zeros(nbvols,itparvol)
+proba = ones(nbvols,itparvol)
 
-nb_sommet=4
+nb_sommet = 4
 
-function ver_tuple_liste(l,a,b)
+function ver_tuple_liste(l, a, b)
     #verifie si un tuple (a,b) et dans une liste
-    n=length(l)
+    n = length(l)
     for i in 1:(n-1)
         if (l[i]==a && l[i+1]==b)
             return true
@@ -25,14 +27,14 @@ function ver_tuple_liste(l,a,b)
     return false
 end
 
-function lecture_itin()
+function lecture_itin(debut = 2, fin = 4)
     #Pour chaque leg j, itin_leg[i][j] vaut 1 si l'itinéraire i utlise le leg j
     n=length(Itineraires)
     itin_leg=[]
 
     for i=1:n
         l=[]
-        for j=2:4
+        for j=debut:fin
             if parse(Int,Itineraires[i][j])!=0
                 append!(l,parse(Int,Itineraires[i][j]))
             end
@@ -41,13 +43,13 @@ function lecture_itin()
     end
     #Une fois ce tableau obtenu, on construit leg_itin qui pour chaque leg (i,j), contient
     #tous les itinéraires qui contiennent ce leg
-    leg_itin=[]
+    leg_itin = []
     for i in 1:leg
         l=[]
-        dep=Capacites[i][2]
-        arr=Capacites[i][3]
+        dep = Capacites[i][2]
+        arr = Capacites[i][3]
         for j in 1:nbvols
-            if ver_tuple_liste(Itineraires[2*j],dep,arr)
+            if ver_tuple_liste(Itineraires[nbclasse*j], dep, arr)
                 append!(l,j)
             end
         end
@@ -58,9 +60,9 @@ end
 
 function lecture_capa()
     #Initialisation des capacites
-    cap=zeros(leg)
+    cap = zeros(leg)
     for i = 1:leg
-        cap[i]=parse(Int,Capacites[i][4])
+        cap[i] = parse(Int,Capacites[i][4])
         #cap[i] représente la capacité du leg i
     end
     return cap
@@ -81,9 +83,9 @@ function lecture_demande()
 end
 
 function gestion_cap()
-    cap=lecture_capa()
+    cap = lecture_capa()
     demande_pers=lecture_demande()
-    L=sum(demande_pers[:,2:itparvol],dims=2)
+    L = sum(demande_pers[:,2:itparvol], dims=2)
     #Cela donne un tableau où le i eme nombre est le
     #nombre de personnes empruntant l'itinéraire i
     return L
