@@ -1,4 +1,4 @@
-function parser_chiffre(A, lettre)
+function parser_chiffre(A, lettre=[])
     # fonction qui prend en argument les donnees et qui renvoit uniquement
     # donnees de type entier
     Donnees = []
