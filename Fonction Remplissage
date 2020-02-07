@@ -1,0 +1,61 @@
+Itineraires = parser_import("Itineraire_escales_prix_temps.csv")
+Demande0 = parser_chiffre(parser_import("DemandeT0.csv"))
+Demande1 = parser_chiffre(parser_import("DemandeT1.csv"))
+Demande2 = parser_chiffre(parser_import("DemandeT2.csv"))
+Capacites = parser_chiffre(parser_import("Capacites2.csv"))
+
+nbvols=length(Itineraires)
+leg=length(Capacites)
+nbpers=length(Demande)
+
+proba=ones(nbvols)
+
+nb_sommet = 4
+
+function ver_tuple_liste(l, a, b)
+    #verifie si un tuple (a,b) et dans une liste
+    n = length(l)
+    for i in 1:(n-1)
+        if (l[i]==a && l[i+1]==b)
+            return true
+        end
+    end
+    return false
+end
+
+function lecture_itin()
+
+    leg_itin = []
+    for i in 1:leg
+        l=[]
+        dep = Capacites[i][2]
+        arr = Capacites[i][3]
+        for j in 1:nbvols
+            if ver_tuple_liste(Itineraires[j],dep,arr)
+                append!(l,j)
+            end
+        end
+        append!(leg_itin,[l])
+    end
+    return (leg_itin)
+end
+
+
+#l est la capacité à l'instant t
+function capacité_finale(l,t)
+    if t==0
+        deman=Demande0
+    if t==1
+        deman=Demande1
+    if t==2
+        deman=Demande2
+    J = parser_import("Itineraire_escales_prix_temps.csv")
+    B = parser_chiffre(J)
+    L1,C1 = prix_alpha(B, t)
+    P = probabilites(C1,beta1,L1)
+    Lien = lecture_itin()
+    for i in 1:length(P)
+        for j in 1:leg
+            if i in Lien[j]
+                if i in deman[5]
+                if l[j]-P[1][i]*deman[3]
