@@ -28,8 +28,17 @@ end
 function heuristique_alea(nb_iter, Prix, Increase = 50)
     Prix_max = Prix
     for i = 1:nb_iter
-        a = rand(1:length(Prix))
-        b =
+        P = Prix_max
+        a = rand(1:length(P))
+        b = rand(1:2)
+        if b == 1
+            Augmentation(P[a], Increase)
+        else
+            Diminution(P[a], Increase)
+        end
+        if gain(P)>gain(Prix_max)
+            Prix_max = P
+        end
     end
     return Prix_max
 end
