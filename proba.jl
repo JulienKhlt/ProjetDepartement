@@ -24,23 +24,29 @@ L1,C1 = prix_alpha(B, 0)
 
 
 #beta
-beta1 = -2
+beta1 =[ -1,-2]
 #le temps est fixé a 1
 
-function summ(C, beta, L)
+function summ(C, beta, L, j)
+    #j est egale à 0 si c'est une famille; 1 si c'est travailleur
     a = 0
     for i in 1:length(C)
-        a = a + exp(C[i] + beta * L[i])
+        a = a + exp(C[i] + beta[j] * L[i])
     end
     return a
 end
 
 function probabilites(C, beta, L)
-    T = []
-    S = summ(C,beta,L)
+
+    U = []
+    V = []
     for i in 1:length(C)
-        append!(T, exp(C[i] + beta * L[i] ) / S)
+        append!(U, exp(C[i] + beta[1] * L[i] ) / summ(C,beta,L,0))
+        append!(V, exp(C[i] + beta[1] * L[i] ) / summ(C,beta,L,1))
     end
+    T=[]
+    append!(T,U)
+    append!(T,V)
     return T
 end
 
