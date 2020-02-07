@@ -5,7 +5,7 @@ function parser_chiffre(A, lettre = 6)
     for i = 1:length(A)
         L = []
         for j = 1:length(A[i])
-            if (j != lettre)
+            if (j != lettre && j != lettre +1)
                 append!(L, parse(Int32, A[i][j]))
             end
         end

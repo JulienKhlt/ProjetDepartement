@@ -1,2 +1,1 @@
 # ProjetDepartement
-function f(x)
