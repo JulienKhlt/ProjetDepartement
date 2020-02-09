@@ -1,17 +1,19 @@
-#using parser
-
-Itineraires = parser_import("Itineraire_escales_prix.csv")
-Demande = parser_import("Demandes2.csv")
-Capacites = parser_import("Capacites2.csv")
-
-nbvols=length(Itineraires)
-leg=length(Capacites)
-nbpers=length(Demande)
-
-
-proba=ones(nbvols)
+include("parser.jl")
 
 nb_sommet = 4
+
+function initialisation(itin,dem,cap)
+    Itineraires = parser_import(itin)
+    Demande = parser_import(dem)
+    Capacites = parser_import(cap)
+    nbvols=length(Itineraires)
+    leg=length(Capacites)
+    nbpers=length(Demande)
+end
+
+initialisation("Itineraire_escales_prix.csv", "Demandes2.csv", "Capacites2.csv")
+
+proba=ones(nbvols)
 
 function ver_tuple_liste(l, a, b)
     #verifie si un tuple (a,b) et dans une liste
@@ -62,8 +64,8 @@ function lecture_demande()
     #Initialisation de demande_pers
     #demande_pers[i] représente le nombre de personnes prenant l'itinéraire i
     for i = 1:nbpers
-        demande_pers[parse(Int,Demande[i][6])]+=""Proba que la personne prenne l'itin eco""*parse(Int,Demande[i][4])
-        demande_pers[parse(Int,Demande[i][7])]+=""Proba que la personne prenne l'itin bus""*parse(Int,Demande[i][4])
+        demande_pers[parse(Int,Demande[i][6])]+=0.4*parse(Int,Demande[i][4])
+        demande_pers[parse(Int,Demande[i][7])]+=0.4*parse(Int,Demande[i][4])
     end
     return demande_pers
 end
