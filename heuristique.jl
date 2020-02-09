@@ -1,3 +1,5 @@
+include("parser.jl")
+
 function prix_ref(prix = 8)
     Donnees = parser_import("Itineraire_escales_prix_temps.csv")
     Prix = []
@@ -43,5 +45,5 @@ function heuristique_alea(nb_iter, Prix, Increase = 50)
     return Prix_max
 end
 
-function heuristique_voisinage()
+function heuristique_voisinage(nb_iter, Prix, Increase = 50)
 end

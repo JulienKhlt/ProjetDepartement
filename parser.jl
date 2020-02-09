@@ -9,4 +9,3 @@ function parser_import(file_path, hasheader=true, separator=';')
         return parser
     end
 end
-parser_import("Itineraires.csv")
