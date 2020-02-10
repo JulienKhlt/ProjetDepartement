@@ -1,53 +1,61 @@
-A = parser_import("Itineraire_escales_prix_temps.csv")
-B = parser_chiffre(A)
+include("parser.jl")
+include("money.jl")
 
+A = parser_import("Itineraire_escales_prix_temps.csv")
+A1 = parser_chiffre(A,[6,7],Float64)
 
 
 function prix_alpha(B,t)
     L=[]
     C=[]
-    #beta=[]
     for i in 1:length(B)
         append!(L,B[i][6+t])
         append!(C,B[i][5])
-        #append!(beta,B[i][])
     end
     return L,C
 end
-#C correspond à la liste des alpha
-#L la liste des prix
 
 #liste des prix
 #liste des alpha
-#liste des beta
-L1,C1 = prix_alpha(B, 0)
+L0,C0 = prix_alpha(A1,0)
+L1,C1 = prix_alpha(A1,1)
+L2,C2 = prix_alpha(A1,2)
 
 
 #beta
-beta1 =[ -1,-2]
+beta1 = -1
+beta2 = -2
 #le temps est fixé a 1
 
-function summ(C, beta, L, j)
-    #j est egale à 0 si c'est une famille; 1 si c'est travailleur
+function summ(L,C)
     a = 0
     for i in 1:length(C)
-        a = a + exp(C[i] + beta[j] * L[i])
+        a = a + exp(C[i] - 1 * L[i]) + exp(C[i] - 2 * L[i])
     end
     return a
 end
 
-function probabilites(C, beta, L)
-
-    U = []
-    V = []
+function calc_t_donnee(L,C,S)
+    M=[]
     for i in 1:length(C)
-        append!(U, exp(C[i] + beta[1] * L[i] ) / summ(C,beta,L,0))
-        append!(V, exp(C[i] + beta[1] * L[i] ) / summ(C,beta,L,1))
+        append!(M, exp(C[i] - 1*L[i]) / S)
+        append!(M, exp(C[i] - 2*L[i]) / S)
     end
-    T=[]
-    append!(T,U)
-    append!(T,V)
+    return M
+end
+
+function probabilites(L0,C0,L1,C1,L2,C2)
+    T = []
+    L=L0+L1+L2
+    C=C0+C1+C2
+    S=summ(L,C)
+    M0=calc_t_donnee(L0,C0,S)
+    M1=calc_t_donnee(L1,C1,S)
+    M2=calc_t_donnee(L2,C2,S)
+    append!(T,[M0])
+    append!(T,[M1])
+    append!(T,[M2])
     return T
 end
 
-probabilites(C1,beta1,L1)
+probabilites(L0,C0,L1,C1,L2,C2)
