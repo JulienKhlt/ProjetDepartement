@@ -1,4 +1,6 @@
 include("parser.jl")
+include("proba.jl")
+include("Fonction\ Remplissage.jl")
 
 function prix_ref(prix = 8)
     Donnees = parser_import("Itineraire_escales_prix_temps.csv")
@@ -38,7 +40,7 @@ function heuristique_alea(nb_iter, Prix, Increase = 50)
         else
             Diminution(P[a], Increase)
         end
-        if gain(P)>gain(Prix_max)
+        if gain(P) > gain(Prix_max)
             Prix_max = P
         end
     end
@@ -46,4 +48,10 @@ function heuristique_alea(nb_iter, Prix, Increase = 50)
 end
 
 function heuristique_voisinage(nb_iter, Prix, Increase = 50)
+    Prix_max = Prix
+    for i = 1:nb_iter
+        P = Prix_max
+        for j = 1:nbre_vol
+        end
+    end
 end
