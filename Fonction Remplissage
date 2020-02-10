@@ -45,23 +45,34 @@ end
 function capacité_finale(l,t)
     if t==0
         deman=Demande0
-    if t==1
-        deman=Demande1
-    if t==2
+    elseif t==1
+         deman=Demande1
+
+    elseif t==2
         deman=Demande2
+    end
     J = parser_import("Itineraire_escales_prix_temps.csv")
-    B = parser_chiffre(J)
-    L1,C1 = prix_alpha(B, t)
-    P = probabilites(C1,beta1,L1)
-    Lien = lecture_itin()
-    for i in 1:length(P)
-        if i%3==1
-            for j in 1:leg
-                if i in Lien[j]
-                    k=1
-                    while deman[k][4] != -1 and deman[k][5]!=i :
-                        k+=1
-                    l[j]= max(l[j]-(P[1][i]+P[1][i+1])*deman[k][3],0)#famille choisissant eco
-                    l[j]=max(l[j]-(P[2][i]+P[2][i+1])*deman[k+1][3],0)
+    itineraires = parser_chiffre(J)
+    prix_a_t,alpha = prix_alpha(itineraires, t)
+    P = probabilites(alpha,beta1,prix_a_t)
+    OD_to_it = fonction1()
+    leg_to_it,it_to_leg,  = separer_itineraire(itineraires, 2, 4)
+    nb_demande=[[0, 0] for i in 1:length(itineraires)]
+    for id_OD in 1:length(deman)
+        for id_itin in OD_to_it[id_OD]
+            if deman[id_OD][4]==-2
+                nb_demande[id_itin][1]=deman[id_OD][3]
+            elseif deman[id_OD][4]==-1
+                nb_demande[id_itin][2]=deman[id_OD][3]
+            end
+        end
+    end
+    for id_itin in 1:length(itineraires)
+        for id_vol in 1:length(it_to_leg)
+            for k in 1:2
+                l[id_vol]= max(l[id_vol]-(P[k][id_itin])*nb_demande[k][id_itin],0)
+            end
+        end
+    end
     return l
-    
+end

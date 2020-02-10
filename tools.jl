@@ -39,14 +39,14 @@ function taille(It)
     return L
 end
 
-function leg()
+function vol()
     P = parser_import("Capacites2.csv")
     legs = parser_chiffre(P, [1,4])
     return legs
 end
 
 function id(It, taille, class=5, nb_class=1.5)
-    legs = leg()
+    legs = vol()
     for j = 1:length(legs)
         for i = 1:length(It)
             if legs[j] == It[i][1:2] && It[i][class]==nb_class && taille[i]==2
@@ -73,7 +73,7 @@ function separer_itineraire(Donnees, debut, fin, class = 5, nb_class = 2)
     it_to_leg = [[] for i=1:length(Donnees)]
     It = itineraire(Donnees, debut, fin)
     T = taille(It)
-    legs = leg()
+    legs = vol()
     G = []
     for i = 1:length(Donnees)
         if T[i]==2
