@@ -30,11 +30,11 @@ function ver_tuple_liste(l, a, b)
     return false
 end
 
-function lecture_itin(Itineraires,nbvols,leg)
+function lecture_itin(Itineraires,Capacites,nbvols,leg,temps)
     #On remplit ici le tableau des prix ou prix[i] est le prix de l'itineraire i
     prix = zeros(nbvols)
     for i = 1:nbvols
-        prix[i]=parse(Int,Itineraires[i][7])
+        prix[i]=parse(Int,Itineraires[i][7+temps])
     end
     #Après cela, on construit leg_itin qui pour chaque leg (i,j), contient
     #tous les itinéraires qui contiennent ce leg
@@ -67,21 +67,24 @@ function lecture_demande(Demande,nbpers,nbvols,proba)
     demande_pers=zeros(nbvols)
     #Initialisation de demande_pers
     #demande_pers[i] représente le nombre de personnes prenant l'itinéraire i
-    for i = 1:(nbpers/2)
+    na=Int(nbpers/2)
+    for i = 1:na
         #itineraire eco
-        demande_pers[parse(Int,Demande[2*i][6])]+=proba[1+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[1+3*(i-1)+3*(nbpers/2)]*parse(Int,Demande[2*i][4])
+        demande_pers[parse(Int,Demande[2*i-1][6])]+=proba[1+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[1+3*(i-1)+3*na]*parse(Int,Demande[2*i][4])
         #itineraire business
-        demande_pers[parse(Int,Demande[2*i][7])]+=proba[2+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[2+3*(i-1)3*(nbpers/2)]*parse(Int,Demande[2*i][4])
+        demande_pers[parse(Int,Demande[2*i-1][7])]+=proba[2+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[2+3*(i-1)+3*na]*parse(Int,Demande[2*i][4])
+        #ne prend pas de vol
+        demande_pers[parse(Int,Demande[2*i-1][8])]+=proba[3+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[3+3*(i-1)+3*na]*parse(Int,Demande[2*i][4])
     end
     return demande_pers
 end
 
-function gestion_cap(Itineraires, Demande,Capacites,nbvols,leg,nbpers,proba)
+function gestion_cap(Itineraires, Demande,Capacites,nbvols,leg,nbpers,proba,temps)
     #Cette fonction vérifie que sur chaque leg, la capacité n'est pas dépassée
     #Si elle est dépassée, cette fonction enlève des personnes
     cap=lecture_capa(Capacites,leg)
     demande_pers=lecture_demande(Demande,nbpers,nbvols,proba)
-    (prix,leg_itin)=lecture_itin(Itineraires,nbvols,leg)
+    (prix,leg_itin)=lecture_itin(Itineraires,Capacites,nbvols,leg,temps)
     for i = 1:leg
         #dem représente la demande réelle du leg en question
         dem=0
@@ -98,14 +101,13 @@ function gestion_cap(Itineraires, Demande,Capacites,nbvols,leg,nbpers,proba)
     return demande_pers
 end
 
-
 function gain(itin,dem,cap,temps)
     proba=calcul_proba(temps)
     (Itineraires, Demande,Capacites,nbvols,leg,nbpers)=initialisation(itin,dem,cap)
-    demande_pers=gestion_cap(Itineraires,Demande,Capacites,nbvols,leg,nbpers,proba)
-    prix=lecture_itin(Itineraires,nbvols,leg)[1]
+    demande_pers=gestion_cap(Itineraires,Demande,Capacites,nbvols,leg,nbpers,proba,temps)
+    prix=lecture_itin(Itineraires,Capacites,nbvols,leg,temps)[1]
     #demande_pers[i] représente le nombre de personnes prenant l'itinéraire i
     #et prix[i] le prix de cet itinéraire
     gain=sum(prix.*demande_pers)
-    return gain
+    return gain,demande_pers
 end
