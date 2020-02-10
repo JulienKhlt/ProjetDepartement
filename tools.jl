@@ -3,6 +3,7 @@ include("money.jl")
 
 It = parser_import("Itineraire_escales_prix_temps.csv")
 Itineraires = parser_chiffre(It, [6,7])
+Demandes = parser_import("Demandes2.csv")
 
 function itineraire(Donnees, debut, fin, it = true)
     # fonction qui prend en argument les donnees, un indice de debut et de fin
@@ -105,3 +106,5 @@ function separer_itineraire(Donnees, debut, fin, class = 5, nb_class = 2)
     end
     return leg_to_it, it_to_leg
 end
+
+function ODandIt(Donnees, Demande)
