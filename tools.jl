@@ -2,7 +2,7 @@ include("parser.jl")
 include("money.jl")
 
 It = parser_import("Itineraire_escales_prix_temps.csv")
-Itineraires = parser_chiffre(It, [6,7], Float32)
+Itineraires = parser_chiffre(It, [6,7])
 
 function itineraire(Donnees, debut, fin, it = true)
     # fonction qui prend en argument les donnees, un indice de debut et de fin
@@ -65,7 +65,7 @@ function put(k, i, A)
     end
 end
 
-function separer_itineraire(Donnees, debut, fin, class = 5, nb_class = 1.5)
+function separer_itineraire(Donnees, debut, fin, class = 5, nb_class = 2)
     # fonction qui renvoit tout les itineraires de 1 en 1 aeroport et
     # tous les itineraires qui sont liés à cette portion
 
