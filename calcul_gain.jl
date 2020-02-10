@@ -32,8 +32,8 @@ end
 
 function lecture_itin(Itineraires,nbvols,leg)
     #On remplit ici le tableau des prix ou prix[i] est le prix de l'itineraire i
-    prix=zeros(nbvols)
-    for i=1:nbvols
+    prix = zeros(nbvols)
+    for i = 1:nbvols
         prix[i]=parse(Int,Itineraires[i][7])
     end
     #Après cela, on construit leg_itin qui pour chaque leg (i,j), contient
