@@ -58,4 +58,4 @@ function probabilites(L0,C0,L1,C1,L2,C2)
     return T
 end
 
-probabilites(L0,C0,L1,C1,L2,C2)
+a=probabilites(L0,C0,L1,C1,L2,C2)
