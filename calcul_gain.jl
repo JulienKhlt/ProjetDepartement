@@ -3,8 +3,8 @@ include("proba.jl")
 
 nb_sommet = 4
 
-function calcul_proba(itin,dem,cap)
-    proba=
+function calcul_proba(temps)
+    proba=probabili[temps]
     return proba
 end
 
@@ -63,23 +63,24 @@ function lecture_capa(Capacites,leg)
     return cap
 end
 
-function lecture_demande(Demande,nbpers,nbvols)
+function lecture_demande(Demande,nbpers,nbvols,proba)
     demande_pers=zeros(nbvols)
     #Initialisation de demande_pers
     #demande_pers[i] représente le nombre de personnes prenant l'itinéraire i
-    for i = 1:nbpers
-        demande_pers[parse(Int,Demande[i][6])]+=0.4*parse(Int,Demande[i][4])
-        demande_pers[parse(Int,Demande[i][7])]+=0.4*parse(Int,Demande[i][4])
+    for i = 1:(nbpers/2)
+        #itineraire eco
+        demande_pers[parse(Int,Demande[2*i][6])]+=proba[1+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[1+3*(i-1)+3*(nbpers/2)]*parse(Int,Demande[2*i][4])
+        #itineraire business
+        demande_pers[parse(Int,Demande[2*i][7])]+=proba[2+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[2+3*(i-1)3*(nbpers/2)]*parse(Int,Demande[2*i][4])
     end
     return demande_pers
 end
 
-function gestion_cap(Itineraires, Demande,Capacites,nbvols,leg,nbpers)
+function gestion_cap(Itineraires, Demande,Capacites,nbvols,leg,nbpers,proba)
     #Cette fonction vérifie que sur chaque leg, la capacité n'est pas dépassée
     #Si elle est dépassée, cette fonction enlève des personnes
     cap=lecture_capa(Capacites,leg)
-    demande_pers=lecture_demande(Demande,nbpers,nbvols)
-    demande_pers_init=copy(demande_pers)
+    demande_pers=lecture_demande(Demande,nbpers,nbvols,proba)
     (prix,leg_itin)=lecture_itin(Itineraires,nbvols,leg)
     for i = 1:leg
         #dem représente la demande réelle du leg en question
@@ -98,10 +99,10 @@ function gestion_cap(Itineraires, Demande,Capacites,nbvols,leg,nbpers)
 end
 
 
-function gain(itin,dem,cap)
-    proba=calcul_proba()
+function gain(itin,dem,cap,temps)
+    proba=calcul_proba(temps)
     (Itineraires, Demande,Capacites,nbvols,leg,nbpers)=initialisation(itin,dem,cap)
-    demande_pers=gestion_cap(Itineraires,Demande,Capacites,nbvols,leg,nbpers)
+    demande_pers=gestion_cap(Itineraires,Demande,Capacites,nbvols,leg,nbpers,proba)
     prix=lecture_itin(Itineraires,nbvols,leg)[1]
     #demande_pers[i] représente le nombre de personnes prenant l'itinéraire i
     #et prix[i] le prix de cet itinéraire
