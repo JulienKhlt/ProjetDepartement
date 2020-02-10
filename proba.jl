@@ -27,35 +27,36 @@ beta1 = -1
 beta2 = -2
 #le temps est fixé a 1
 
-function summ(L,C)
-    a = 0
-    for i in 1:length(C)
-        a = a + exp(C[i] - 1 * L[i]) + exp(C[i] - 2 * L[i])
+function calcdonnee(L,C)
+    F=[0.0 for i in 1:15]
+    B=[0.0 for i in 1:15]
+    Pfamille=[0.0 for i in 1:15]
+    Pbusiness=[0.0 for i in 1:15]
+    for j in 1:5
+        f=0
+        b=0
+        for i in (3*(j-1)+1):(3*j)
+            F[i]= exp(C[i] - 0.1*L[i])
+            f+=exp(C[i] - 0.1*L[i])
+            append!(B, exp(C[i] - 0.2*L[i]))
+            b+=exp(C[i] - 0.2*L[i])
+        end
+        for p in (3*(j-1)+1):(3*j)
+            Pfamille[p]=F[p]/f
+            Pbusiness[p]=B[p]/f
+        end
     end
-    return a
-end
-
-function calc_t_donnee(L,C,S)
-    M=[]
-    for i in 1:length(C)
-        append!(M, exp(C[i] - 1*L[i]) / S)
-        append!(M, exp(C[i] - 2*L[i]) / S)
-    end
-    return M
+    return append!(Pfamille,Pbusiness)
 end
 
 function probabilites(L0,C0,L1,C1,L2,C2)
-    T = []
     L=L0+L1+L2
     C=C0+C1+C2
-    S=summ(L,C)
-    M0=calc_t_donnee(L0,C0,S)
-    M1=calc_t_donnee(L1,C1,S)
-    M2=calc_t_donnee(L2,C2,S)
-    append!(T,[M0])
-    append!(T,[M1])
-    append!(T,[M2])
+    M0=calcdonnee(L0,C0)
+    M1=calcdonnee(L1,C1)
+    M2=calcdonnee(L2,C2)
+    T=[M0,M1,M2]
     return T
 end
 
-a=probabilites(L0,C0,L1,C1,L2,C2)
+probabili=probabilites(L0,C0,L1,C1,L2,C2)
