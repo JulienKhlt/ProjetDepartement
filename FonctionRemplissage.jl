@@ -19,6 +19,9 @@ function capacite_finale(l, t, prix_a_t)
     leg_to_it, it_to_leg  = separer_itineraire(itineraires, 2, 4)
     nb_demande=[[0, 0] for i in 1:length(itineraires)]
     capa_fin = [0. for i = 1:length(l)]
+    for i in 1:length(l)
+        capa_fin[i] = l[i]
+    end
     for id_OD in 1:length(deman)
         for id_itin in OD_to_it[id_OD]
             # -1 et -2 symbolisent les classes de personnes
@@ -31,8 +34,8 @@ function capacite_finale(l, t, prix_a_t)
     end
     for id_itin in 1:length(itineraires)
         for id_vol in 1:length(leg_to_it)
-            capa_fin[id_vol] = max(l[id_vol] - (P[id_itin]) * nb_demande[id_itin][1], 0)
-            capa_fin[id_vol] = max(l[id_vol] - (P[length(itineraires) + id_itin]) * nb_demande[id_itin][2], 0)
+            capa_fin[id_vol] = max(capa_fin[id_vol] - (P[id_itin]) * nb_demande[id_itin][1], 0)
+            capa_fin[id_vol] = max(capa_fin[id_vol] - (P[length(itineraires) + id_itin]) * nb_demande[id_itin][2], 0)
         end
     end
     return capa_fin
