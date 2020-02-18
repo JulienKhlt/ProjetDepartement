@@ -1,6 +1,9 @@
 include("parser.jl")
 include("proba.jl")
-include("Fonction\ Remplissage.jl")
+include("FonctionRemplissage.jl")
+include("calcul_gain.jl")
+
+Capa = parser_chiffre(parser_import("Capacites2.csv"), [1])
 
 function prix_ref(prix = 8)
     Donnees = parser_import("Itineraire_escales_prix_temps.csv")
@@ -15,18 +18,13 @@ function prix_ref(prix = 8)
     return Prix
 end
 
-function Augmentation(L, nbre)
-    for i = 1:length(L)
-        L[i] += nbre
+function prix_test(prix = 8)
+    Donnees = parser_import("Itineraire_escales_prix_temps.csv")
+    Prix = []
+    for i = 1:length(Donnees)
+        append!(Prix, parse(Int32, Donnees[i][prix]))
     end
-    return L
-end
-
-function Diminution(L, nbre)
-    for i = 1:length(L)
-        L[i] -= nbre
-    end
-    return L
+    return Prix
 end
 
 function heuristique_alea(nb_iter, Prix, Increase = 50)
@@ -36,9 +34,9 @@ function heuristique_alea(nb_iter, Prix, Increase = 50)
         a = rand(1:length(P))
         b = rand(1:2)
         if b == 1
-            Augmentation(P[a], Increase)
+            P[a] += Increase
         else
-            Diminution(P[a], Increase)
+            P[a] -= Increase
         end
         if gain(P) > gain(Prix_max)
             Prix_max = P
@@ -48,10 +46,23 @@ function heuristique_alea(nb_iter, Prix, Increase = 50)
 end
 
 function heuristique_voisinage(nb_iter, Prix, Increase = 50)
+    leg_to_it, it_to_leg = separer_itineraire(Itineraires, 2, 4)
     Prix_max = Prix
     for i = 1:nb_iter
-        P = Prix_max
-        for j = 1:nbre_vol
+        for j = 1:length(Capa)
+            if dem<cap
+                for k = 1:length(leg_to_it[j])
+                    P[leg_to_it[j][k]] += Increase
+                end
+            else
+                for k = 1:length(leg_to_it[j])
+                    P[leg_to_it[j][k]] -= Increase
+                end
+            end
+        end
+        if gain>g
+            Prix_max = Prix
         end
     end
+    return Prix_max
 end

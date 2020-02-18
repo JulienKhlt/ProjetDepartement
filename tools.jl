@@ -1,9 +1,8 @@
 include("parser.jl")
-include("money.jl")
 
 It = parser_import("Itineraire_escales_prix_temps.csv")
 Itineraires = parser_chiffre(It, [6,7])
-Demandes = parser_chiffre(parser_import("DemandeT0.csv"), [1])
+Demandes = parser_import("Demandes2.csv")
 
 function itineraire(Donnees, debut, fin, it = true)
     # fonction qui prend en argument les donnees, un indice de debut et de fin
@@ -40,14 +39,14 @@ function taille(It)
     return L
 end
 
-function leg()
+function vol()
     P = parser_import("Capacites2.csv")
     legs = parser_chiffre(P, [1,4])
     return legs
 end
 
-function id(It, taille, class=5, nb_class=1.5)
-    legs = leg()
+function id(It, taille, class=5, nb_class=2)
+    legs = vol()
     for j = 1:length(legs)
         for i = 1:length(It)
             if legs[j] == It[i][1:2] && It[i][class]==nb_class && taille[i]==2
@@ -74,7 +73,7 @@ function separer_itineraire(Donnees, debut, fin, class = 5, nb_class = 2)
     it_to_leg = [[] for i=1:length(Donnees)]
     It = itineraire(Donnees, debut, fin)
     T = taille(It)
-    legs = leg()
+    legs = vol()
     G = []
     for i = 1:length(Donnees)
         if T[i]==2
@@ -84,7 +83,6 @@ function separer_itineraire(Donnees, debut, fin, class = 5, nb_class = 2)
                 L = [It[i][1], It[i][2]]
                 for l = 1:length(legs)
                     if L == legs[l]
-                        append!(leg_to_it[l], i)
                         append!(it_to_leg[i], l)
                     end
                 end
@@ -109,15 +107,15 @@ end
 
 function ODandIt(Donnees, Demande)
     OD_to_it = [[] for i in 1:length(Demande)]
+    t = taille(itineraire(Donnees, 2, 4)) #t=2 s'il n'y a pas d'escale, 3 sinon
     for id_OD in 1:length(Demande)
-        a1=Demande[it_OD][1]
-        a2=Demande[it_OD][2]
+        a1 = Demande[id_OD][1]
+        a2 = Demande[id_OD][2]
         for id_itin in 1:length(Donnees)
-            b1=Donnees[id_itin][2]
-            if b1==a1
-                t=taille(itineraire(Donnees, 2, 4)) #t=2 s'il n'y a pas d'escale, 3 sinon
-                b2=Donnees[id_itin][1+t]
-                if b2==a2
+            b1 = Donnees[id_itin][2]
+            if b1 == a1
+                b2 = Donnees[id_itin][1+t[id_itin]]
+                if b2 == a2
                     append!(OD_to_it[id_OD], id_itin)
                 end
             end
