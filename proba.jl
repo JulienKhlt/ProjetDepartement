@@ -13,9 +13,12 @@ function prix_alpha(B, t, prix = 6, alpha = 5)
     return L, C
 end
 
+function alpha_test()
+end
+
 #beta
-beta1 = 0.1
-beta2 = 0.2
+beta1 = 0.005
+beta2 = 0.01
 #le temps est fixé a 1
 
 function calcdonnee(L, C)
