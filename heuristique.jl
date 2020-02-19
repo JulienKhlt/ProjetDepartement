@@ -47,8 +47,12 @@ end
 
 function heuristique_voisinage(nb_iter, Prix, Increase = 20)
     leg_to_it, it_to_leg = separer_itineraire(Itineraires, 2, 4)
-    Prix_max = Prix
+    Prix_max = [0. for i in 1:length(Prix)]
+    for i in 1:length(Prix)
+        Prix_max[i] =  Prix[i]
+    end
     truc, alpha = prix_alpha(Itineraires, 1)
+    Proba_max = calcdonnee(Prix_max, alpha)
     for i = 1:nb_iter
         C = capacite_finale(Capa, 0, Prix)
         Proba = calcdonnee(Prix, alpha)
@@ -65,9 +69,16 @@ function heuristique_voisinage(nb_iter, Prix, Increase = 20)
                 end
             end
         end
-        if gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba, Prix, 1) > gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba, Prix_max, 1)
-            Prix_max = Prix
+        println("gain max = ", gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba_max, Prix_max, 1))
+        println("gain = ", gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba, Prix, 1))
+        if gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba, Prix, 1) > gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba_max, Prix_max, 1)
+            for i in 1:length(Prix)
+                Prix_max[i] =  Prix[i]
+            end
+            for i in 1:length(Proba)
+                Proba_max[i] =  Proba[i]
+            end
         end
     end
-    return Prix_max
+    return Prix_max, Proba_max
 end
