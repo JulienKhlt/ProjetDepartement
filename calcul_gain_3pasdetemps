@@ -1,0 +1,33 @@
+include("calcul_gain.jl")
+include("proba.jl")
+include("tools.jl")
+
+nbre_pas_tps=3
+
+function calcul_capa_restante(Capa,Itineraires,temps,demande_per)
+    n=length(Capa)
+    itin=lecture_itin(Itineraires,Capa,temps)[2]
+    for i=1:n
+        itin_act=itin[i]
+        for j in itin_act
+            Capa[i][4]=string(parse(Int,Capa[i])-demande_per[j])
+        end
+    end
+end
+
+
+function gain_total()
+    gain_tot=0
+    proba=probabilites(nbre_pas_tps)
+    (Itineraires, Demande, Capacites) = initialisation("Itineraire_escales_prix_temps.csv","DemandeT0.csv","Capacites2.csv")
+    proba_actuelle=proba[1]
+    demande_per=gestion_cap(Itineraires,Demande,Capacites,proba_actuelle,1)
+    gain_tot+=gain(Itineraires,Demande,Capacites, proba_actuelle, 1)
+    for i = 2:nbre_pas_tps
+        Demande=parser_import("DemandeT"*string(i-1)*".csv")
+        Capacites=calcul_capa_restante(Capacites,Itineraires,i,demande_per)
+        proba_actuelle=proba[i]
+        demande_per=gestion_cap(Itineraires,Demande,Capacites,proba_actuelle,i)
+        gain_tot+=gain(Itineraires,Demande,Capacites, proba_actuelle, i)
+    end
+end
