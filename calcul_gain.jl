@@ -2,16 +2,13 @@ include("parser.jl")
 include("proba.jl")
 
 nb_sommet = 4
+nb_pas_tps=3
 
 function initialisation(itin, dem, cap)
     Itineraires = parser_import(itin)
     Demande = parser_import(dem)
     Capacites = parser_import(cap)
-    nbvols = length(Itineraires)
-    leg = length(Capacites)
-    nbpers = length(Demande)
-    proba = ones(nbvols)
-    return (Itineraires, Demande, Capacites, nbvols, leg, nbpers, proba)
+    return (Itineraires, Demande, Capacites)
 end
 
 function ver_tuple_liste(l, a, b)
@@ -68,11 +65,11 @@ function lecture_demande(Demande, nbpers, nbvols, proba)
     na = Int( nbpers / 2 )
     for i = 1:na
         # itineraire eco
-        demande_pers[parse(Int, Demande[2*i-1][6])] += proba[1+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[1+3*(i-1)+3*na]*parse(Int,Demande[2*i][4])
+        demande_pers[parse(Int, Demande[2*i-1][6])] += proba[1+nb_pas_tps*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[1+nb_pas_tps*(i-1+na)]*parse(Int,Demande[2*i][4])
         # itineraire business
-        demande_pers[parse(Int, Demande[2*i-1][7])] += proba[2+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[2+3*(i-1)+3*na]*parse(Int,Demande[2*i][4])
+        demande_pers[parse(Int, Demande[2*i-1][7])] += proba[2+nb_pas_tps*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[2+nb_pas_tps*(i-1+na)]*parse(Int,Demande[2*i][4])
         # ne prend pas de vol
-        demande_pers[parse(Int, Demande[2*i-1][8])] += proba[3+3*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[3+3*(i-1)+3*na]*parse(Int,Demande[2*i][4])
+        demande_pers[parse(Int, Demande[2*i-1][8])] += proba[3+nb_pas_tps*(i-1)]*parse(Int,Demande[2*i-1][4])+proba[3+nb_pas_tps*(i-1+na)]*parse(Int,Demande[2*i][4])
     end
     return demande_pers
 end
@@ -102,9 +99,9 @@ function gestion_cap(Itineraires, Demande, Capacites, proba, temps)
     return demande_pers
 end
 
-function gain(itin, dem, cap, proba, prix, temps)
-    (Itineraires, Demande, Capacites, nbvols, leg, nbpers, truc) = initialisation(itin, dem, cap)
+function gain(Itineraires,Demande,Capacites, proba, temps)
     demande_pers = gestion_cap(Itineraires, Demande, Capacites, proba, temps)
+    prix=lecture_itin(Itineraires,Capacites,temps)[1]
     #demande_pers[i] représente le nombre de personnes prenant l'itinéraire i
     #et prix[i] le prix de cet itinéraire
     gain = sum(prix.*demande_pers)
