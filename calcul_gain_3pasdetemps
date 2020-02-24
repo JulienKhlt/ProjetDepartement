@@ -10,14 +10,15 @@ function calcul_capa_restante(Capa,Itineraires,temps,demande_per)
     for i=1:n
         itin_act=itin[i]
         for j in itin_act
-            Capa[i][4]=string(parse(Int,Capa[i])-demande_per[j])
+            Capa[i][4]=string(Int(round(parse(Float64,Capa[i][4])-demande_per[j])))
         end
     end
+    return Capa
 end
 
 
 function gain_total()
-    gain_tot=0
+    gain_tot=0.
     proba=probabilites(nbre_pas_tps)
     (Itineraires, Demande, Capacites) = initialisation("Itineraire_escales_prix_temps.csv","DemandeT0.csv","Capacites2.csv")
     proba_actuelle=proba[1]
@@ -30,4 +31,5 @@ function gain_total()
         demande_per=gestion_cap(Itineraires,Demande,Capacites,proba_actuelle,i)
         gain_tot+=gain(Itineraires,Demande,Capacites, proba_actuelle, i)
     end
+    return gain_tot
 end
