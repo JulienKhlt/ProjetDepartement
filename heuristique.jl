@@ -5,13 +5,28 @@ include("calcul_gain.jl")
 
 Capa = lecture_capa(parser_import("Capacites2.csv"))
 
-function prix_ref(prix = 8)
+function Augmentation(L, nbre, indice)
+    for i = 1:length(L)
+        L[i][indice] += nbre
+    end
+    return L
+end
+
+function Diminution(L, nbre, indice)
+    for i = 1:length(L)
+        L[i][indice] -= nbre
+    end
+    return L
+end
+
+
+function prix_ref(prix = 8, nb_pas_tps = 3)
     Donnees = parser_import("Itineraire_escales_prix_temps.csv")
     Prix = []
-    for i = 1:length(Donnees)
+    for i = prix:nb_pas_tps + prix - 1
         L = []
-        for j = prix:length(Donnees[i])
-            append!(L, parse(Int32, Donnees[i][j]))
+        for j = 1:length(Donnees)
+            append!(L, parse(Int32, Donnees[j][i]))
         end
         append!(Prix, [L])
     end
@@ -22,62 +37,71 @@ function prix_test(prix = 8)
     Donnees = parser_import("Itineraire_escales_prix_temps.csv")
     Prix = []
     for i = 1:length(Donnees)
-        append!(Prix, parse(Float32, Donnees[i][prix]))
+        append!(Prix, [[parse(Float32, Donnees[i][prix])]])
     end
     return Prix
 end
 
-function heuristique_alea(nb_iter, Prix, Increase = 50)
-    Prix_max = Prix
-    for i = 1:nb_iter
-        P = Prix_max
-        a = rand(1:length(P))
-        b = rand(1:2)
-        if b == 1
-            P[a] += Increase
-        else
-            P[a] -= Increase
-        end
-        if gain(P) > gain(Prix_max)
-            Prix_max = P
+function test_inf(L, Increase, indice)
+    for i in 1:length(L)
+        if L[i][indice] < Increase
+            return false
         end
     end
-    return Prix_max
+    return true
 end
 
-function heuristique_voisinage(nb_iter, Prix, Increase = 20)
-    leg_to_it, it_to_leg = separer_itineraire(Itineraires, 2, 4)
-    Prix_max = [0. for i in 1:length(Prix)]
-    for i in 1:length(Prix)
-        Prix_max[i] =  Prix[i]
+function egal_list(A, B)
+    for i in 1:length(B)
+        for j in 1:length(B[i])
+            A[i][j] = B[i][j]
+        end
     end
+end
+
+function capacite_end(nbre_pas_tps)
+    C = lecture_capa(parser_import("Capacites2.csv"))
+    for i in 1:nbre_pas_tps
+        C = capacite_finale(C, i-1, Prix[i])
+    end
+    return C
+end
+
+function heuristique_voisinage(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
+    leg_to_it, it_to_leg = separer_itineraire(Itineraires, 2, 4)
+    Prix_max = [[0. for j in 1:length(Prix[i])] for i in 1:length(Prix)]
+    egal_list(Prix_max, Prix)
     truc, alpha = prix_alpha(Itineraires, 1)
-    Proba_max = calcdonnee(Prix_max, alpha)
+    Proba_max = []
+    for i = 1:nbre_pas_tps
+        P = calcdonnee(Prix_max[i], alpha)
+        append!(Proba_max, [P])
+    end
     for i = 1:nb_iter
-        C = capacite_finale(Capa, 0, Prix)
-        Proba = calcdonnee(Prix, alpha)
+        C = capacite_end(nbre_pas_tps)
+        Proba = []
+        for i = 1:nbre_pas_tps
+            P = calcdonnee(Prix[i], alpha)
+            append!(Proba, [P])
+        end
         for j = 1:length(Capa)
-            if C[j]==0
+            if C[j] == 0
                 for k in leg_to_it[j]
-                    Prix[k] += Increase
+                    if !(k%nbre_pas_tps == 0)
+                        Prix = Augmentation(Prix, Increase, k)
+                    end
                 end
             else
                 for k in leg_to_it[j]
-                    if Prix[k] - Increase > 0
-                        Prix[k] -= Increase
+                    if test_inf(Prix, Increase, k)
+                        Prix = Diminution(Prix, Increase, k)
                     end
                 end
             end
         end
-        println("gain max = ", gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba_max, Prix_max, 1))
-        println("gain = ", gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba, Prix, 1))
-        if gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba, Prix, 1) > gain("Itineraire_escales_prix_temps.csv", "DemandeT0.csv", "Capacites2.csv", Proba_max, Prix_max, 1)
-            for i in 1:length(Prix)
-                Prix_max[i] =  Prix[i]
-            end
-            for i in 1:length(Proba)
-                Proba_max[i] =  Proba[i]
-            end
+        if gain_total(Proba, Prix) > gain_total(Proba_max, Prix_max)
+            egal_list(Prix_max, Prix)
+            egal_list(Proba_max, Proba)
         end
     end
     return Prix_max, Proba_max

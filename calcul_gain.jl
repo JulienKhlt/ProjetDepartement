@@ -99,9 +99,8 @@ function gestion_cap(Itineraires, Demande, Capacites, proba, temps)
     return demande_pers
 end
 
-function gain(Itineraires,Demande,Capacites, proba, temps)
+function gain(Itineraires, Demande, Capacites, proba, prix, temps)
     demande_pers = gestion_cap(Itineraires, Demande, Capacites, proba, temps)
-    prix=lecture_itin(Itineraires,Capacites,temps)[1]
     #demande_pers[i] représente le nombre de personnes prenant l'itinéraire i
     #et prix[i] le prix de cet itinéraire
     gain = sum(prix.*demande_pers)

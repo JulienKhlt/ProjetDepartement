@@ -43,13 +43,13 @@ function calcdonnee(L, C)
     return append!(Pfamille, Pbusiness)
 end
 
-function probabilites(nb_pas_tps)
+function probabilites(nb_pas_tps, prix)
     T = []
     for i = 1:nb_pas_tps
         #liste des prix
         #liste des alpha
         L, C = prix_alpha(A1, i-1)
-        M = calcdonnee(L, C)
+        M = calcdonnee(prix[i], C)
         append!(T, [M])
     end
     return T
