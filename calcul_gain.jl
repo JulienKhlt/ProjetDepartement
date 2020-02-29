@@ -11,7 +11,7 @@ function lecture_demande(Demande, nbpers, nbvols, proba, deb_class = 4, typepers
     na = Int( nbpers / typepers )
     for i = 1:na
         for j = 1:length(Demande[i])-deb_class
-            demande_pers[Demande[typepers*i-1][deb_class + j]] += proba[j+nb_pas_tps*(i-1)]*Demande[typepers*i-1][place_demande]+proba[j+nb_pas_tps*(i-1+na)]*Demande[typepers*i][place_demande]
+            demande_pers[Demande[typepers*i-1][deb_class + j]] += proba[Demande[typepers*i-1][deb_class + j]]*Demande[typepers*i-1][place_demande]+proba[Demande[typepers*i-1][deb_class + j]+nbvols]*Demande[typepers*i][place_demande]
         end
     end
     return demande_pers
