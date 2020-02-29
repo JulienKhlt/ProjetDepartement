@@ -2,8 +2,7 @@ include("parser.jl")
 include("proba.jl")
 include("FonctionRemplissage.jl")
 include("calcul_gain.jl")
-
-Capa = lecture_capa(parser_import("Capacites2.csv"))
+include("calcul_gain_3pasdetemps.jl")
 
 function Augmentation(L, nbre, indice)
     for i = 1:length(L)
@@ -59,31 +58,33 @@ function egal_list(A, B)
     end
 end
 
-function capacite_end(nbre_pas_tps)
+function capacite_end(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it, it_to_leg, Prix)
     C = lecture_capa(parser_import("Capacites2.csv"))
     for i in 1:nbre_pas_tps
-        C = capacite_finale(C, i-1, Prix[i])
+        C = capacite_finale(C, i-1, Prix[i], Itineraires, alpha, proba, OD_to_it, leg_to_it, it_to_leg)
     end
     return C
 end
 
 function heuristique_voisinage(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
+    Itineraires = parser_chiffre(parser_import("Itineraire_escales_prix_temps.csv"), [6,7])
+    Capacites = lecture_capa(parser_import("Capacites2.csv"))
     leg_to_it, it_to_leg = separer_itineraire(Itineraires, 2, 4)
     Prix_max = [[0. for j in 1:length(Prix[i])] for i in 1:length(Prix)]
     egal_list(Prix_max, Prix)
-    truc, alpha = prix_alpha(Itineraires, 1)
+    alpha = calc_alpha(Itineraires)
     Proba_max = []
     for i = 1:nbre_pas_tps
         P = calcdonnee(Prix_max[i], alpha)
         append!(Proba_max, [P])
     end
     for i = 1:nb_iter
-        C = capacite_end(nbre_pas_tps)
         Proba = []
         for i = 1:nbre_pas_tps
             P = calcdonnee(Prix[i], alpha)
             append!(Proba, [P])
         end
+        C = capacite_end(nbre_pas_tps, Itineraires, alpha, Proba, leg_to_it, it_to_leg, Prix)
         for j = 1:length(Capa)
             if C[j] == 0
                 for k in leg_to_it[j]
@@ -99,7 +100,14 @@ function heuristique_voisinage(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
                 end
             end
         end
-        if gain_total(Proba, Prix) > gain_total(Proba_max, Prix_max)
+        Proba = []
+        for i = 1:nbre_pas_tps
+            P = calcdonnee(Prix[i], alpha)
+            append!(Proba, [P])
+        end
+        println("Prix 1 : ", gain_total(Proba, Prix, Itineraires, leg_to_it, nbre_pas_tps))
+        println("Prix max 1 : ", gain_total(Proba_max, Prix_max, Itineraires, leg_to_it, nbre_pas_tps))
+        if gain_total(Proba, Prix, Itineraires, leg_to_it, nbre_pas_tps) > gain_total(Proba_max, Prix_max, Itineraires, leg_to_it, nbre_pas_tps)
             egal_list(Prix_max, Prix)
             egal_list(Proba_max, Proba)
         end

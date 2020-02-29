@@ -1,8 +1,5 @@
 include("parser.jl")
 
-A1 = parser_chiffre(parser_import("Itineraire_escales_prix_temps.csv"), [6,7])
-
-
 function prix_alpha(B, t, prix = 6, alpha = 5)
     L = []
     C = []
@@ -13,7 +10,12 @@ function prix_alpha(B, t, prix = 6, alpha = 5)
     return L, C
 end
 
-function alpha_test()
+function calc_alpha(Itineraires, a = 5)
+    A = []
+    for i in 1:length(Itineraires)
+        append!(A, Itineraires[i][a])
+    end
+    return A
 end
 
 #beta
@@ -21,20 +23,20 @@ beta1 = 0.005
 beta2 = 0.01
 #le temps est fixé a 1
 
-function calcdonnee(L, C)
+function calcdonnee(L, C, nbre_pas_tps = 3)
     Pfamille = [0.0 for i in 1:length(L)]
     Pbusiness = [0.0 for i in 1:length(L)]
-    for j in 1:length(L)/3
+    for j in 1:length(L)/nbre_pas_tps
         f = 0.0
         b = 0.0
-        for k = (3*(j-1)+1):(3*j)
+        for k = (nbre_pas_tps*(j-1)+1):(nbre_pas_tps*j)
             i = round(Int, k)
             Pfamille[i] = exp(C[i] - beta1*L[i])
             f += exp(C[i] - beta1*L[i])
             Pbusiness[i] = exp(C[i] - beta2*L[i])
             b += exp(C[i] - beta2*L[i])
         end
-        for k = (3*(j-1)+1):(3*j)
+        for k = (nbre_pas_tps*(j-1)+1):(nbre_pas_tps*j)
             p = round(Int, k)
             Pfamille[p] = Pfamille[p] / f
             Pbusiness[p] = Pbusiness[p] / b

@@ -1,8 +1,17 @@
 include("parser.jl")
 
-It = parser_import("Itineraire_escales_prix_temps.csv")
-Itineraires = parser_chiffre(It, [6,7])
-Demandes = parser_import("Demandes2.csv")
+function lecture_capa(Capacites)
+    #Initialisation des capacites
+    leg = length(Capacites)
+    cap = zeros(leg)
+    for i = 1:leg
+        cap[i] = parse(Int, Capacites[i][4])
+        #cap[i] représente la capacité du leg i
+    end
+    return cap
+end
+
+
 
 function itineraire(Donnees, debut, fin, it = true)
     # fonction qui prend en argument les donnees, un indice de debut et de fin

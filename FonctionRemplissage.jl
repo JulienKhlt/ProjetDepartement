@@ -4,7 +4,7 @@ include("proba.jl")
 
 
 #l est la capacité à l'instant t
-function capacite_finale(l, t, prix_a_t)
+function capacite_finale(l, t, prix_a_t, Itineraires, alpha, proba, OD_to_it, leg_to_it, it_to_leg)
     if t == 0
         deman = parser_chiffre(parser_import("DemandeT0.csv"), [1])
     elseif t == 1
@@ -12,12 +12,9 @@ function capacite_finale(l, t, prix_a_t)
     elseif t == 2
         deman = parser_chiffre(parser_import("DemandeT2.csv"), [1])
     end
-    itineraires = parser_chiffre(parser_import("Itineraire_escales_prix_temps.csv"), [6,7])
-    truc, alpha = prix_alpha(itineraires, t)
-    P = calcdonnee(prix_a_t, alpha)
-    OD_to_it = ODandIt(itineraires, deman)
-    leg_to_it, it_to_leg  = separer_itineraire(itineraires, 2, 4)
-    nb_demande=[[0, 0] for i in 1:length(itineraires)]
+    OD_to_it = ODandIt(Itineraires, deman)
+    P = proba[t+1]
+    nb_demande=[[0, 0] for i in 1:length(Itineraires)]
     capa_fin = [0. for i = 1:length(l)]
     for i in 1:length(l)
         capa_fin[i] = l[i]
@@ -32,10 +29,10 @@ function capacite_finale(l, t, prix_a_t)
             end
         end
     end
-    for id_itin in 1:length(itineraires)
+    for id_itin in 1:length(Itineraires)
         for id_vol in 1:length(leg_to_it)
             capa_fin[id_vol] = max(capa_fin[id_vol] - (P[id_itin]) * nb_demande[id_itin][1], 0)
-            capa_fin[id_vol] = max(capa_fin[id_vol] - (P[length(itineraires) + id_itin]) * nb_demande[id_itin][2], 0)
+            capa_fin[id_vol] = max(capa_fin[id_vol] - (P[length(Itineraires) + id_itin]) * nb_demande[id_itin][2], 0)
         end
     end
     return capa_fin
