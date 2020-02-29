@@ -132,15 +132,15 @@ function ODandIt(Donnees, Demande)
     end
     return OD_to_it
 end
-function Augmentation(L, nbre, indice)
-    for i = 1:length(L)
+function Augmentation(L, nbre, indice, deb = 1)
+    for i = deb:length(L)
         L[i][indice] += nbre
     end
     return L
 end
 
-function Diminution(L, nbre, indice)
-    for i = 1:length(L)
+function Diminution(L, nbre, indice, deb = 1)
+    for i = deb:length(L)
         L[i][indice] -= nbre
     end
     return L
@@ -192,4 +192,18 @@ function capacite_end(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it, it_to_
         C = capacite_finale(C, i-1, Itineraires, alpha, proba, leg_to_it, it_to_leg)
     end
     return C
+end
+
+function capacite_end_precis(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it, it_to_leg)
+    C = lecture_capa(parser_import("Capacites2.csv"))
+    I = [0 for i in 1:length(C)]
+    for i in 1:nbre_pas_tps
+        C = capacite_finale(C, i-1, Itineraires, alpha, proba, leg_to_it, it_to_leg)
+        for j in 1:length(C)
+            if C[j] == 0
+                I[j] = i
+            end
+        end
+    end
+    return C, I
 end
