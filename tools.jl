@@ -1,11 +1,11 @@
 include("parser.jl")
 
-function lecture_capa(Capacites)
+function lecture_capa(Capacites, numero_cap)
     #Initialisation des capacites
     leg = length(Capacites)
     cap = zeros(leg)
     for i = 1:leg
-        cap[i] = parse(Int, Capacites[i][4])
+        cap[i] = parse(Int, Capacites[i][numero_cap])
         #cap[i] représente la capacité du leg i
     end
     return cap
