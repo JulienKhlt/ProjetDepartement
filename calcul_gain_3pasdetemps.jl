@@ -13,6 +13,18 @@ function calcul_capa_restante(Capa, Itineraires, temps, demande_per, leg_to_it)
     return Capa
 end
 
+function calcul_capa_restante_newFiles(Capacites, Itineraires, temps, demande_per, place_itin=5, place_capa=4)
+    nbvols = length(Capacites)
+    for i = 1:nbvols
+        #i correspond à l'identifiant du vol
+        for j in Capacites[i][place_itin]
+            #j correspond à un itinéraire associé
+            Capacites[i][place_capa] = Capacites[i][place_capa]-demande_per[j]
+        end
+    end
+    return Capacites
+end
+
 
 function gain_total(proba, prix, Itineraires, leg_to_it, nbre_pas_tps)
     gain_tot = 0.
