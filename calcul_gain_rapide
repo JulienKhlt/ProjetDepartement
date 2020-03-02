@@ -1,0 +1,26 @@
+#Les prix précédents sont donnés ainsi que les nouveaux prix et les anciennes demandes
+include("proba.jl")
+
+function quick_gestion_cap(Capacites, dem_0, diff_prob, prob0, leg_to_it)
+    dem1=dem0
+    for i=1:length(Capacites)
+        s=0
+        for j in leg_to_it[i]
+            #dem1 est le nombre de personnes en plus par rapport à la dem0
+            dem1[j]=diff_prob[j]*dem_0[j]/prob0[j]
+            s+=dem1[j]+dem_0[j]
+        end
+        if s>Capacites[j]
+            for j in leg_to_it[i]
+                alpha=Capacites[i]/s
+                dem1[j]=(dem1[j]+dem_0[j])*alpha-dem1[j]
+            end
+        end
+end
+
+function quick_gain(gain0,prix_0,prix_1,dem_0,Capacites,Itineraires,proba_0,proba_1)
+    diff_prob=proba_1-proba_0
+    leg_to_it=separer_itineraire(Itineraires,2,4)
+    dem_1=quick_gestion_cap(Capacites,dem_0,diff_prob,prob0,leg_to_it)
+    gain1=gain0+sum((prix_1-prix_0).*dem_1)
+end

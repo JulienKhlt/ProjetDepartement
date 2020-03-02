@@ -34,8 +34,8 @@ function write_itinerary_file(folder_name, list_itineraries, links)
 
     for itinerary in list_itineraries
         if itinerary.list_visited_airports == []
-                line = string(itinerary.id, ";", itinerary.departure, ";", itinerary.arrival, ";", itinerary.OnD, ";[];", itinerary.alpha, ";[]")
-                push!(list_lines, line)
+            line = string(itinerary.id, ";", itinerary.departure, ";", itinerary.arrival, ";", itinerary.OnD, ";[];", itinerary.alpha, ";", links.itin_to_flight[itinerary.id])
+            push!(list_lines, line)
         else
             line = string(itinerary.id, ";", itinerary.departure, ";", itinerary.arrival, ";", itinerary.OnD, ";", itinerary.list_visited_airports, ";", itinerary.alpha, ";", links.itin_to_flight[itinerary.id])
             push!(list_lines, line)
