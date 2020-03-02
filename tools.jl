@@ -114,6 +114,20 @@ function separer_itineraire(Donnees, debut, fin, class = 5, nb_class = 2)
     return leg_to_it, it_to_leg
 end
 
+function separer_itineraire_2(Vols, Itineraires itin=5)
+    leg_to_it=[]
+    for i = 1:length(Vols)
+        append!(leg_to_it,[Vols[i][itin]])
+    end
+    it_to_leg=[[] for i in 1:length(Itineraires)]
+    for i = 1:length(Vols)
+        for j in Vols[i][itin]
+            append!(it_to_leg[j],i)
+        end
+    end
+    return leg_to_it,it_to_leg
+end
+
 function ODandIt(Donnees, Demande)
     OD_to_it = [[] for i in 1:length(Demande)]
     t = taille(itineraire(Donnees, 2, 4)) #t=2 s'il n'y a pas d'escale, 3 sinon
@@ -132,6 +146,19 @@ function ODandIt(Donnees, Demande)
     end
     return OD_to_it
 end
+
+function OdandIt_2(Ond, Itineraires ,itin=6, od=3)
+    OD_to_it=[]
+    for i=1:length(Ond)
+        append!(OD_to_it,Ond[i][itin])
+    end
+    return OD_to_it
+    it_to_OD=[[] for i=1:length(Itineraires)]
+    for i=1:length(Itineraires)
+        append!(it_to_OD,Itineraires[i][od])
+    end
+end
+
 function Augmentation(L, nbre, indice, deb = 1)
     for i = deb:length(L)
         L[i][indice] += nbre
