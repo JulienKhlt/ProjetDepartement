@@ -10,32 +10,31 @@ function parser_import(file_path, hasheader=true, separator=';')
     end
 end
 
-function parser_chiffre(A, lettre = [], type = Int32)
+function parser_chiffre(A, list = [], lettre = [], type = Int32)
     # fonction qui prend en argument les donnees et qui renvoit uniquement
     # donnees de type entier
     Donnees = []
-    i = 1
-    while i <= length(A)
-        L = []
-        j = 1
-        while j <= length(A[i])
+    for i = 1:length(A)
+        L = Any[]
+        for j = 1:length(A[i])
             if !(j in lettre)
-                if A[i][j] == "["
-                    j += 1
-                    l = []
-                    while A[i][j] != "]"
-                        append!(l, parse(type, A[i][j]))
-                        j += 1
+                if (j in list)
+                    l = split(A[i][j])
+                    a = Any[]
+                    for m = 1:length(l)
+                        if (m == 1)
+                            append!(a, parse(type, l[m][2:length(l[m])-1]))
+                        else
+                            append!(a, parse(type, l[m][1:length(l[m])-1]))
+                        end
                     end
-                    append!(L, [l])
+                    append!(L, [a])
                 else
                     append!(L, parse(type, A[i][j]))
                 end
             end
-            j += 1
         end
         append!(Donnees, [L])
-        i += 1
     end
     return Donnees
 end
