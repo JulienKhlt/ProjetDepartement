@@ -21,11 +21,17 @@ function parser_chiffre(A, list = [], lettre = [], type = Int32)
                 if (j in list)
                     l = split(A[i][j])
                     a = Any[]
-                    for m = 1:length(l)
-                        if (m == 1)
-                            append!(a, parse(type, l[m][2:length(l[m])-1]))
-                        else
-                            append!(a, parse(type, l[m][1:length(l[m])-1]))
+                    if length(l) == 1
+                        if length(l[1])>2
+                            append!(a, parse(type, l[1][2:length(l[1])-1]))
+                        end
+                    else
+                        for m = 1:length(l)
+                            if (m == 1)
+                                append!(a, parse(type, l[m][2:length(l[m])-1]))
+                            else
+                                append!(a, parse(type, l[m][1:length(l[m])-1]))
+                            end
                         end
                     end
                     append!(L, [a])

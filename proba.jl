@@ -56,5 +56,3 @@ function probabilites(nb_pas_tps, prix)
     end
     return T
 end
-
-probabili = probabilites(3)

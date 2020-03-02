@@ -1,11 +1,12 @@
 include("parser.jl")
 include("proba.jl")
+include("tools.jl")
 include("FonctionRemplissage.jl")
 include("calcul_gain.jl")
 include("calcul_gain_3pasdetemps.jl")
 
 function heuristique_voisinage(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
-    Itineraires = parser_chiffre(parser_import("Itineraire_escales_prix_temps.csv"), [6,7])
+    Itineraires = parser_chiffre(parser_import("Itineraire_escales_prix_temps.csv"), [], [6,7])
     Capacites = lecture_capa(parser_import("Capacites2.csv"))
     leg_to_it, it_to_leg = separer_itineraire(Itineraires, 2, 4)
     Prix_max = [[0. for j in 1:length(Prix[i])] for i in 1:length(Prix)]
