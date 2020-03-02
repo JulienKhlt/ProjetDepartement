@@ -127,7 +127,13 @@ function create_itineraries(per_t_n, airp, list_demand_busi, list_demand_fam, ed
                     # Itinerary no buy
                     id_itin += 1
                     alpha_no_buy = rand()
-                    add_itinerary(list_itineraries, itin_to_OnD, itin_to_flight, Ond_to_itin, id_itin, id_OnD, dep_node, arr_node, [], [], alpha_no_buy)
+                    flight_associated = 0
+                    for fl in list_flights[edg_out[dep_node]]
+                        if fl.airport_arr == arr_node
+                            flight_associated = fl.id
+                        end
+                    end
+                    add_itinerary(list_itineraries, itin_to_OnD, itin_to_flight, Ond_to_itin, id_itin, id_OnD, dep_node, arr_node, [], [flight_associated], alpha_no_buy)
                 end
             end
         end

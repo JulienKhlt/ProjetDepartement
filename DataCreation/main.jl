@@ -4,7 +4,7 @@ include("csv_writer.jl")
 # Parameters
 nb_node_min, nb_node_max = 4, 8
 nb_edge_1_min, nb_edge_1_max = 4, 6
-nb_edge_2_min, nb_edge_2_max = 3, 6
+nb_edge_2_min, nb_edge_2_max = 3, 5
 capacities = [50, 60, 70, 80, 90, 100]
 number_periods = 20
 demand_business = [2, 4, 6, 8, 10]
