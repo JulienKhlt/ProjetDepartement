@@ -154,9 +154,9 @@ function OdandIt_2(Ond, Itineraires ,itin=6, od=4)
     end
     it_to_OD=[]
     for i=1:length(Itineraires)
-        append!(it_to_OD,Itineraires[i][4])
+        append!(it_to_OD,convert(Int64,Itineraires[i][4]))
     end
-    return it_to_OD
+    return OD_to_it,it_to_OD
 end
 
 function Augmentation(L, nbre, indice, deb = 1)
