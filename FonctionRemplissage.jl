@@ -6,11 +6,11 @@ include("proba.jl")
 #l est la capacité à l'instant t
 function capacite_finale(l, t, Itineraires, alpha, proba, leg_to_it, it_to_leg)
     if t == 0
-        deman = parser_chiffre(parser_import("DemandeT0.csv"), [1])
+        deman = parser_chiffre(parser_import("DemandeT0.csv"), [], [1])
     elseif t == 1
-        deman = parser_chiffre(parser_import("DemandeT1.csv"), [1])
+        deman = parser_chiffre(parser_import("DemandeT1.csv"), [], [1])
     elseif t == 2
-        deman = parser_chiffre(parser_import("DemandeT2.csv"), [1])
+        deman = parser_chiffre(parser_import("DemandeT2.csv"), [], [1])
     end
     OD_to_it = ODandIt(Itineraires, deman)
     P = proba[t+1]

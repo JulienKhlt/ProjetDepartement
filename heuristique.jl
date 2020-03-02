@@ -55,7 +55,7 @@ function heuristique_voisinage(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
 end
 
 function heuristique_voisinage2(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
-    Itineraires = parser_chiffre(parser_import("Itineraire_escales_prix_temps.csv"), [6,7])
+    Itineraires = parser_chiffre(parser_import("Itineraire_escales_prix_temps.csv"), [], [6,7])
     Capacites = lecture_capa(parser_import("Capacites2.csv"))
     leg_to_it, it_to_leg = separer_itineraire(Itineraires, 2, 4)
     Prix_max = [[0. for j in 1:length(Prix[i])] for i in 1:length(Prix)]
@@ -73,19 +73,22 @@ function heuristique_voisinage2(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
             append!(Proba, [P])
         end
         C, I = capacite_end_precis(nbre_pas_tps, Itineraires, alpha, Proba, leg_to_it, it_to_leg)
-        for j = 1:length(Capa)
+        println(C)
+        for j = 1:length(Capacites)
             if C[j] == 0
                 for k in leg_to_it[j]
                     if !(k%nbre_pas_tps == 0)
                         Prix = Augmentation(Prix, Increase, k, I[j])
                     end
                 end
+                println("a")
             else
                 for k in leg_to_it[j]
                     if test_inf(Prix, Increase, k)
                         Prix = Diminution(Prix, Increase, k)
                     end
                 end
+                println("d")
             end
         end
         Proba = []
@@ -93,6 +96,9 @@ function heuristique_voisinage2(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
             P = calcdonnee(Prix[i], alpha)
             append!(Proba, [P])
         end
+
+        println("Prix ", gain_total(Proba, Prix, Itineraires, leg_to_it, nbre_pas_tps))
+        println("Prix max ", gain_total(Proba_max, Prix_max, Itineraires, leg_to_it, nbre_pas_tps))
 
         if gain_total(Proba, Prix, Itineraires, leg_to_it, nbre_pas_tps) > gain_total(Proba_max, Prix_max, Itineraires, leg_to_it, nbre_pas_tps)
             egal_list(Prix_max, Prix)

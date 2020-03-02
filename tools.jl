@@ -1,6 +1,6 @@
 include("parser.jl")
 
-function lecture_capa(Capacites, numero_cap)
+function lecture_capa(Capacites, numero_cap = 4)
     #Initialisation des capacites
     leg = length(Capacites)
     cap = zeros(leg)
@@ -50,7 +50,7 @@ end
 
 function vol()
     P = parser_import("Capacites2.csv")
-    legs = parser_chiffre(P, [1,4])
+    legs = parser_chiffre(P, [], [1,4])
     return legs
 end
 
@@ -216,7 +216,10 @@ end
 function capacite_end(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it, it_to_leg)
     C = lecture_capa(parser_import("Capacites2.csv"))
     for i in 1:nbre_pas_tps
-        C = capacite_finale(C, i-1, Itineraires, alpha, proba, leg_to_it, it_to_leg)
+        Demande = parser_chiffre(parser_import("DemandeT"*string(i-1)*".csv"), [], [1])
+        proba_actuelle = proba[i]
+        demande_per = gestion_cap(Itineraires, Demande, C, proba_actuelle, i, leg_to_it)
+        C = calcul_capa_restante(C, Itineraires, i, demande_per, leg_to_it)
     end
     return C
 end
@@ -225,7 +228,10 @@ function capacite_end_precis(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it,
     C = lecture_capa(parser_import("Capacites2.csv"))
     I = [0 for i in 1:length(C)]
     for i in 1:nbre_pas_tps
-        C = capacite_finale(C, i-1, Itineraires, alpha, proba, leg_to_it, it_to_leg)
+        Demande = parser_chiffre(parser_import("DemandeT"*string(i-1)*".csv"), [], [1])
+        proba_actuelle = proba[i]
+        demande_per = gestion_cap(Itineraires, Demande, C, proba_actuelle, i, leg_to_it)
+        C = calcul_capa_restante(C, Itineraires, i, demande_per, leg_to_it)
         for j in 1:length(C)
             if C[j] == 0
                 I[j] = i

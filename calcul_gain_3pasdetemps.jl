@@ -30,7 +30,7 @@ function gain_total(proba, prix, Itineraires, leg_to_it, nbre_pas_tps)
     gain_tot = 0.
     Capa = lecture_capa(parser_import("Capacites2.csv"))
     for i = 1:nbre_pas_tps
-        Demande = parser_chiffre(parser_import("DemandeT"*string(i-1)*".csv"),[1])
+        Demande = parser_chiffre(parser_import("DemandeT"*string(i-1)*".csv"), [], [1])
         proba_actuelle = proba[i]
         demande_per = gestion_cap(Itineraires, Demande, Capa, proba_actuelle, i, leg_to_it)
         Capa = calcul_capa_restante(Capa, Itineraires, i, demande_per, leg_to_it)
