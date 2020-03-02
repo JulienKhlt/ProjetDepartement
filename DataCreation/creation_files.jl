@@ -134,6 +134,9 @@ function create_itineraries(per_t_n, airp, list_demand_busi, list_demand_fam, ed
                         end
                     end
                     add_itinerary(list_itineraries, itin_to_OnD, itin_to_flight, Ond_to_itin, id_itin, id_OnD, dep_node, arr_node, [], [flight_associated], alpha_no_buy)
+                    if flight_associated != 0
+                        push!(flight_to_itin[flight_associated], id_itin)
+                    end
                 end
             end
         end
