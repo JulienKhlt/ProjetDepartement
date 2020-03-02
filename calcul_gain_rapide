@@ -1,5 +1,4 @@
 #Les prix précédents sont donnés ainsi que les nouveaux prix et les anciennes demandes
-include("proba.jl")
 
 function quick_gestion_cap(Capacites, dem_0, diff_prob, prob0, leg_to_it)
     dem1=dem0
@@ -16,11 +15,11 @@ function quick_gestion_cap(Capacites, dem_0, diff_prob, prob0, leg_to_it)
                 dem1[j]=(dem1[j]+dem_0[j])*alpha-dem1[j]
             end
         end
+    end
 end
 
-function quick_gain(gain0,prix_0,prix_1,dem_0,Capacites,Itineraires,proba_0,proba_1)
+function quick_gain(gain0,prix_0,prix_1,dem_0,Capacites,Itineraires,proba_0,proba_1,leg_to_it)
     diff_prob=proba_1-proba_0
-    leg_to_it=separer_itineraire(Itineraires,2,4)
     dem_1=quick_gestion_cap(Capacites,dem_0,diff_prob,prob0,leg_to_it)
     gain1=gain0+sum((prix_1-prix_0).*dem_1)
 end
