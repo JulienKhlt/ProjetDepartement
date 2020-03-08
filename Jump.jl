@@ -4,16 +4,16 @@ include("proba.jl")
 include("FonctionRemplissage.jl")
 include("calcul_gain.jl")
 
-Capa = lecture_capa(parser_import("Capacites2.csv"))
+Capa = lecture_capa(parser_import("DataCreation/Data/little0/flight.csv"))
 
 
-OnD=parser_chiffre(parser_import("DataCreation/Data/little0/OnD.csv"),[6])
-flight=parser_chiffre(parser_import("DataCreation/Data/little0/flight.csv"),[5])
-itineraries=parser_chiffre(parser_import("DataCreation/Data/little0/OnD.csv"),[5,7])
+OnD = parser_chiffre(parser_import("DataCreation/Data/little0/OnD.csv"), [6])
+flight = parser_chiffre(parser_import("DataCreation/Data/little0/flight.csv"), [5])
+itineraries = parser_chiffre(parser_import("DataCreation/Data/little0/itineraries.csv"), [5,7], [6])
 
 
 using JuMP
-uding Clp
+using Clp
 
 function carotte(v)
 

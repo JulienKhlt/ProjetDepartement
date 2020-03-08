@@ -225,16 +225,20 @@ function capacite_end(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it, it_to_
 end
 
 function capacite_end_precis(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it, it_to_leg)
+    nbvols = length(Itineraires)
     C = lecture_capa(parser_import("Capacites2.csv"))
     I = [0 for i in 1:length(C)]
     for i in 1:nbre_pas_tps
         Demande = parser_chiffre(parser_import("DemandeT"*string(i-1)*".csv"), [], [1])
+        nbpers = length(Demande)
         proba_actuelle = proba[i]
-        demande_per = gestion_cap(Itineraires, Demande, C, proba_actuelle, i, leg_to_it)
+        demande_per = lecture_demande(Demande, nbpers, nbvols, proba_actuelle)
         C = calcul_capa_restante(C, Itineraires, i, demande_per, leg_to_it)
         for j in 1:length(C)
-            if C[j] == 0
-                I[j] = i
+            if abs(C[j]) < 10^-10
+                if(I[j] == 0)
+                    I[j] = i
+                end
             end
         end
     end

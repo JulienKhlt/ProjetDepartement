@@ -7,7 +7,9 @@ function calcul_capa_restante(Capa, Itineraires, temps, demande_per, leg_to_it)
     for i = 1:n
         itin_act = leg_to_it[i]
         for j in itin_act
-            Capa[i] = Capa[i]-demande_per[j]
+            if !(j % 3 == 0)
+                Capa[i] = max(Capa[i] - demande_per[j], 0)
+            end
         end
     end
     return Capa
@@ -28,11 +30,13 @@ end
 
 function gain_total(proba, prix, Itineraires, leg_to_it, nbre_pas_tps)
     gain_tot = 0.
+    nbvols = length(Itineraires)
     Capa = lecture_capa(parser_import("Capacites2.csv"))
     for i = 1:nbre_pas_tps
         Demande = parser_chiffre(parser_import("DemandeT"*string(i-1)*".csv"), [], [1])
+        nbpers = length(Demande)
         proba_actuelle = proba[i]
-        demande_per = gestion_cap(Itineraires, Demande, Capa, proba_actuelle, i, leg_to_it)
+        demande_per = lecture_demande(Demande, nbpers, nbvols, proba_actuelle)
         Capa = calcul_capa_restante(Capa, Itineraires, i, demande_per, leg_to_it)
         gain_tot += gain(Itineraires, Demande, Capa, proba_actuelle, prix[i], i, demande_per)
     end

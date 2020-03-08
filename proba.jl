@@ -19,8 +19,8 @@ function calc_alpha(Itineraires, a = 5)
 end
 
 #beta
-beta1 = 0.005
-beta2 = 0.01
+beta1 = 0.008
+beta2 = 0.014
 #le temps est fixé a 1
 
 function calcdonnee(L, C, nbre_pas_tps = 3)

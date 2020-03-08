@@ -11,7 +11,7 @@ function lecture_demande(Demande, nbpers, nbvols, proba, deb_class = 4, typepers
     na = Int( nbpers / typepers )
     for i = 1:na
         for j = 1:length(Demande[i])-deb_class
-            demande_pers[Demande[typepers*i-1][deb_class + j]] += proba[Demande[typepers*i-1][deb_class + j]]*Demande[typepers*i-1][place_demande]+proba[Demande[typepers*i-1][deb_class + j]+nbvols]*Demande[typepers*i][place_demande]
+            demande_pers[Demande[typepers*i-1][deb_class + j]] += proba[Demande[typepers*i-1][deb_class + j]]*Demande[typepers*i-1][place_demande]+proba[Demande[typepers*i-1][deb_class + j] + nbvols]*Demande[typepers*i][place_demande]
         end
     end
     return demande_pers
@@ -83,7 +83,7 @@ function gestion_cap_newFiles(Itineraires, Demande, Capacites, proba, place_itin
     return demande_pers
 end
 
-function gain(Itineraires, Demande, Capacites, proba, prix, temps, demande_pers)
+function gain(prix, demande_pers)
     #demande_pers[i] représente le nombre de personnes prenant l'itinéraire i
     #et prix[i] le prix de cet itinéraire
     gain = sum(prix.*demande_pers)

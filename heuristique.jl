@@ -1,7 +1,6 @@
 include("parser.jl")
 include("proba.jl")
 include("tools.jl")
-include("FonctionRemplissage.jl")
 include("calcul_gain.jl")
 include("calcul_gain_3pasdetemps.jl")
 
@@ -25,7 +24,7 @@ function heuristique_voisinage(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
         end
         C = capacite_end(nbre_pas_tps, Itineraires, alpha, Proba, leg_to_it, it_to_leg)
         for j = 1:length(Capa)
-            if C[j] == 0
+            if (abs(C[j]) < 10^-10)
                 for k in leg_to_it[j]
                     if !(k%nbre_pas_tps == 0)
                         Prix = Augmentation(Prix, Increase, k)
@@ -73,22 +72,19 @@ function heuristique_voisinage2(nb_iter, Prix, Increase = 20, nbre_pas_tps = 3)
             append!(Proba, [P])
         end
         C, I = capacite_end_precis(nbre_pas_tps, Itineraires, alpha, Proba, leg_to_it, it_to_leg)
-        println(C)
         for j = 1:length(Capacites)
-            if C[j] == 0
+            if (C[j] < 10^-10)
                 for k in leg_to_it[j]
                     if !(k%nbre_pas_tps == 0)
                         Prix = Augmentation(Prix, Increase, k, I[j])
                     end
                 end
-                println("a")
             else
                 for k in leg_to_it[j]
                     if test_inf(Prix, Increase, k)
                         Prix = Diminution(Prix, Increase, k)
                     end
                 end
-                println("d")
             end
         end
         Proba = []
