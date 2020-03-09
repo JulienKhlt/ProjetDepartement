@@ -173,7 +173,6 @@ function Diminution(L, nbre, indice, deb = 1)
     return L
 end
 
-
 function prix_ref(prix = 8, nb_pas_tps = 3)
     Donnees = parser_import("Itineraire_escales_prix_temps.csv")
     Prix = []
@@ -277,10 +276,12 @@ end
 function capacite_end_newFiles(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it, it_to_leg)
     Capa = lecture_capa(parser_import("DataCreation/Data/little0/flight.csv"))
     Demande = parser_chiffre(parser_import("DataCreation/Data/little0/OnD.csv"), [6])
+    Personne = []
     for i in 1:nbre_pas_tps
         proba_actuelle = proba[i]
         demande_per = lecture_demande_newFiles(Demande, Itineraires, proba_actuelle)
         Capa = calcul_capa_restante_newFiles(Capa, Itineraires, i, demande_per, leg_to_it)
+        append!(Personne, demande_per)
     end
-    return Capa
+    return Capa, Personne
 end
