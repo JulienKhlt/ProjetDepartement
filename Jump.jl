@@ -1,7 +1,6 @@
 include("parser.jl")
 include("tools.jl")
 include("proba.jl")
-include("FonctionRemplissage.jl")
 include("calcul_gain.jl")
 
 Capa = lecture_capa(parser_import("DataCreation/Data/little0/flight.csv"))

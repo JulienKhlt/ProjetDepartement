@@ -16,15 +16,14 @@ function calcul_capa_restante(Capa, Itineraires, temps, demande_per, leg_to_it)
 end
 
 function calcul_capa_restante_newFiles(Capacites, Itineraires, temps, demande_per, place_itin=5, place_capa=4)
-    nbvols = length(Capacites)
-    for i = 1:nbvols
-        #i correspond à l'identifiant du vol
-        for j in Capacites[i][place_itin]
-            #j correspond à un itinéraire associé
-            Capacites[i][place_capa] = Capacites[i][place_capa]-demande_per[j]
+    n = length(Capa)
+    for i = 1:n
+        itin_act = leg_to_it[i]
+        for j in 2:length(itin_act)
+            Capa[i] = max(Capa[i] - demande_per[itin_act[j]], 0)
         end
     end
-    return Capacites
+    return Capa
 end
 
 
@@ -38,7 +37,22 @@ function gain_total(proba, prix, Itineraires, leg_to_it, nbre_pas_tps)
         proba_actuelle = proba[i]
         demande_per = lecture_demande(Demande, nbpers, nbvols, proba_actuelle)
         Capa = calcul_capa_restante(Capa, Itineraires, i, demande_per, leg_to_it)
-        gain_tot += gain(Itineraires, Demande, Capa, proba_actuelle, prix[i], i, demande_per)
+        gain_tot += gain(prix[i], demande_per)
+    end
+    return gain_tot
+end
+
+function gain_total_newFiles(proba, prix, Itineraires, leg_to_it, nbre_pas_tps)
+    gain_tot = 0.
+    nbvols = length(Itineraires)
+    Capa = lecture_capa(parser_import("DataCreation/Data/little0/flight.csv"))
+    Demande = parser_chiffre(parser_import("DataCreation/Data/little0/OnD.csv"), [6])
+    for i = 1:nbre_pas_tps
+        nbpers = length(Demande)
+        proba_actuelle = proba[i]
+        demande_per = lecture_demande_newFiles(Demande, Itineraires, proba_actuelle)
+        Capa = calcul_capa_restante_newFiles(Capa, Itineraires, i, demande_per, leg_to_it)
+        gain_tot += gain(prix[i], demande_per)
     end
     return gain_tot
 end

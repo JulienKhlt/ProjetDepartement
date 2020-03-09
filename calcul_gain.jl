@@ -17,21 +17,21 @@ function lecture_demande(Demande, nbpers, nbvols, proba, deb_class = 4, typepers
     return demande_pers
 end
 
-function lecture_demande_newFiles(Demande, Itineraires, proba, typepers = 2, place_demande_trav = 4, place_demande_fam=5, place_flight=7, place_itin=6)
+function lecture_demande_newFiles(Demande, Itineraires, proba, place_demande_trav = 4, place_demande_fam=5, place_flight=7, place_itin=6)
     #Demande est un tableau correspondant au fichier OnD,
     #Itineraire est un tableau correspondant au fichier itineraries
     #proba donne un tableau avec autant de listes que de pas de temps; chaque liste donne la proba d'une famille pour les lignes impaires
     #et d'un travailleur pour les lignes paires
-    nbitin=length(Itineraires)
+    nbitin = length(Itineraires)
     demande_pers = zeros(nbitin)
     # Initialisation de demande_pers
     # demande_pers[i] représente le nombre de personnes prenant l'itinéraire i : nb de personnes qui demandent x proba
-    nbOD=length(Demande) #correspond au nb d'origines/destinations
+    nbOD = length(Demande) #correspond au nb d'origines/destinations
     for i = 1:nbOD
         #i correspond au n° de l'origine-destination
         for j in Demande[i][place_itin]
             #j correspond à un itinéraire associé à l'origine/destination i
-            demande_pers[j]+=proba[2*j-1]*Demande[i][place_demande_fam] + proba[2*j]*Demande[i][place_demande_fam]
+            demande_pers[j] += proba[j]*Demande[i][place_demande_fam] + proba[j + nbitin]*Demande[i][place_demande_trav]
         end
     end
     return demande_pers

@@ -244,3 +244,32 @@ function capacite_end_precis(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it,
     end
     return C, I
 end
+
+function calculer_alpha(Itineraires, position = 6)
+    A = []
+    for i in 1:length(Itineraires)
+        append!(A, parse(Float32, Itineraires[i][position]))
+    end
+    return A
+end
+
+function capacite_end_precis_newFiles(nbre_pas_tps, Itineraires, alpha, proba, leg_to_it, it_to_leg)
+    nbvols = length(Itineraires)
+    Capa = lecture_capa(parser_import("DataCreation/Data/little0/flight.csv"))
+    Demande = parser_chiffre(parser_import("DataCreation/Data/little0/OnD.csv"), [6])
+    I = [0 for i in 1:length(C)]
+    for i in 1:nbre_pas_tps
+        nbpers = length(Demande)
+        proba_actuelle = proba[i]
+        demande_per = lecture_demande_newFiles(Demande, Itineraires, proba_actuelle)
+        Capa = calcul_capa_restante_newFiles(Capa, Itineraires, i, demande_per, leg_to_it)
+        for j in 1:length(C)
+            if abs(C[j]) < 10^-10
+                if(I[j] == 0)
+                    I[j] = i
+                end
+            end
+        end
+    end
+    return C, I
+end
