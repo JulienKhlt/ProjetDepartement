@@ -32,7 +32,18 @@ function carotte(v)
     @constraint(m,DemandeOD[i=1:length(OnD)], sum(q[j] for j in OnD[i][6]) == OnD[i][4]+OnD[i][5])
 
     for j=1:length(OnD)
-         @constraint(m,[i=1:length(OnD[j][6])], q[OnD[j][6][i]]/alpha[OnD[j][6][i]] <= q[OnD[j][6][1]]/alpha[OnD[j][6][1]] )
+        i=1
+        while 2*i <= length(OnD[j][6])
+            a=exp(alpha[OnD[j][6][2*i]]-(2*v[OnD[j][6][2*i]]))
+            @constraint(m, q[OnD[j][6][2*i]]/a <= q[OnD[j][6][1]]/alpha[OnD[j][6][1]])
+            i+=1
+        end
+        k=1
+        while (2*k)+1 <= length(OnD[j][6])
+            a=exp(alpha[OnD[j][6][2*k+1]]-v[OnD[j][6][2*k+1]])
+            @constraint(m, q[OnD[j][6][2*k+1]]/a <= q[OnD[j][6][1]]/alpha[OnD[j][6][1]])
+            k+=1
+        end
     end
 
 
