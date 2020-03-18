@@ -120,32 +120,31 @@ function heuristique_voisinage3(nb_iter, Increase = 20, nbre_pas_tps = 3)
     end
     for i = 1:nb_iter
         Proba = []
-        for i = 1:nbre_pas_tps
-            P = calcdonnee(Prix[i], alpha)
+        for j = 1:nbre_pas_tps
+            P = calcdonnee(Prix[j], alpha)
             append!(Proba, [P])
         end
-        C, Pers = capacite_end_newFiles(nbre_pas_tps, itineraries, alpha, Proba, leg_to_it, it_to_leg)
+        C, I = capacite_end_precis_newFiles(nbre_pas_tps, itineraries, alpha, Proba, leg_to_it, it_to_leg)
         for j = 1:length(Capacites)
-            if (abs(C[j]) < 10^-10)
+            if (C[j] < 10^-10)
                 for k = 2:length(leg_to_it[j])
-                    Prix = Augmentation(Prix, Increase, leg_to_it[j][k])
+                    Prix = Augmentation(Prix, Increase, leg_to_it[j][k], I[j])
                 end
             else
                 for k = 2:length(leg_to_it[j])
                     if test_inf(Prix, Increase, k)
-                        Prix = Diminution(Prix, Increase, leg_to_it[j][k])
+                        Prix = Diminution(Prix, Increase, leg_to_it[j][k], I[j])
                     end
                 end
             end
         end
         Proba = []
-        for i = 1:nbre_pas_tps
-            P = calcdonnee(Prix[i], alpha)
+        for j = 1:nbre_pas_tps
+            P = calcdonnee(Prix[j], alpha)
             append!(Proba, [P])
         end
-        println("Prix ", gain_total(Proba, Prix, itineraries, leg_to_it, nbre_pas_tps))
-        println("Prix max ", gain_total(Proba_max, Prix_max, itineraries, leg_to_it, nbre_pas_tps))
-        if gain_total(Proba, Prix, itineraries, leg_to_it, nbre_pas_tps) > gain_total(Proba_max, Prix_max, Itineraires, leg_to_it, nbre_pas_tps)
+
+        if gain_total_newFiles(Proba, Prix, itineraries, leg_to_it, nbre_pas_tps) > gain_total_newFiles(Proba_max, Prix_max, itineraries, leg_to_it, nbre_pas_tps)
             egal_list(Prix_max, Prix)
             egal_list(Proba_max, Proba)
         end
@@ -169,8 +168,8 @@ function heuristique_voisinage4(nb_iter, Prix, Proba, Increase = 20, nbre_pas_tp
     end
     for i = 1:nb_iter
         Proba = []
-        for i = 1:nbre_pas_tps
-            P = calcdonnee(Prix[i], alpha)
+        for j = 1:nbre_pas_tps
+            P = calcdonnee(Prix[j], alpha)
             append!(Proba, [P])
         end
         C, I = capacite_end_precis_newFiles(nbre_pas_tps, itineraries, alpha, Proba, leg_to_it, it_to_leg)
@@ -182,14 +181,14 @@ function heuristique_voisinage4(nb_iter, Prix, Proba, Increase = 20, nbre_pas_tp
             else
                 for k = 2:length(leg_to_it[j])
                     if test_inf(Prix, Increase, k)
-                        Prix = Diminution(Prix, Increase, leg_to_it[j][k])
+                        Prix = Diminution(Prix, Increase, leg_to_it[j][k], I[j])
                     end
                 end
             end
         end
         Proba = []
-        for i = 1:nbre_pas_tps
-            P = calcdonnee(Prix[i], alpha)
+        for j = 1:nbre_pas_tps
+            P = calcdonnee(Prix[j], alpha)
             append!(Proba, [P])
         end
 
@@ -217,8 +216,8 @@ function heuristique_voisinage5(nb_iter, Prix, Proba, Increase = 20, nbre_pas_tp
     end
     for i = 1:nb_iter
         Proba = []
-        for i = 1:nbre_pas_tps
-            P = calcdonnee(Prix[i], alpha)
+        for j = 1:nbre_pas_tps
+            P = calcdonnee(Prix[j], alpha)
             append!(Proba, [P])
         end
         C, Pers = capacite_end_newFiles(nbre_pas_tps, itineraries, alpha, Proba, leg_to_it, it_to_leg)
@@ -238,8 +237,8 @@ function heuristique_voisinage5(nb_iter, Prix, Proba, Increase = 20, nbre_pas_tp
             end
         end
         Proba = []
-        for i = 1:nbre_pas_tps
-            P = calcdonnee(Prix[i], alpha)
+        for j = 1:nbre_pas_tps
+            P = calcdonnee(Prix[j], alpha)
             append!(Proba, [P])
         end
 

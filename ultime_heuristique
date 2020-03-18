@@ -1,17 +1,17 @@
 include("heuristique.jl")
 
-function heuristique_ultime (nb_iter=1000,nb_pas_tps=3)
+function heuristique_ultime(nb_iter=1000,nb_pas_tps=3)
     itineraries = parser_chiffre(parser_import("DataCreation/Data/little0/itineraries.csv"), [5,7], [6])
     flight = parser_chiffre(parser_import("DataCreation/Data/little0/flight.csv"), [5])
     leg_to_it, it_to_leg = separer_itineraire_2(flight, itineraries)
 
-    Prix_m,Proba_m=heuristique_voisinage3(nb_iter,20,nb_pas_tps)
+    Prix_m,Proba_m=heuristique_voisinage3(nb_iter,50,nb_pas_tps)
     g=gain_total_newFiles(Proba_m, Prix_m, itineraries, leg_to_it, nb_pas_tps)
     println("Gain après une heuristique : ",g)
-    Prix_m,Proba_m=heuristique_voisinage4(nb_iter/10,Prix_m,Proba_m,10,nb_pas_tps)
+    Prix_m,Proba_m=heuristique_voisinage4(nb_iter/10,Prix_m,Proba_m,20,nb_pas_tps)
     g=gain_total_newFiles(Proba_m, Prix_m, itineraries, leg_to_it, nb_pas_tps)
     println("Gain après deux heuristiques : ",g)
-    Prix_m,Proba_m=heuristique_voisinage5(nb_iter,Prix_m,Proba_m,5,nb_pas_tps)
+    Prix_m,Proba_m=heuristique_voisinage5(nb_iter,Prix_m,Proba_m,10,nb_pas_tps)
     g=gain_total_newFiles(Proba_m, Prix_m, itineraries, leg_to_it, nb_pas_tps)
     println("Gain après trois heuristiques : ",g)
 end
