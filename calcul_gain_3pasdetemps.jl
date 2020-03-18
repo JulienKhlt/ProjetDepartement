@@ -15,7 +15,7 @@ function calcul_capa_restante(Capa, Itineraires, temps, demande_per, leg_to_it)
     return Capa
 end
 
-function calcul_capa_restante_newFiles(Capacites, Itineraires, temps, demande_per, place_itin=5, place_capa=4)
+function calcul_capa_restante_newFiles(Capa, Itineraires, temps, demande_per, leg_to_it, place_itin=5, place_capa=4)
     n = length(Capa)
     for i = 1:n
         itin_act = leg_to_it[i]
