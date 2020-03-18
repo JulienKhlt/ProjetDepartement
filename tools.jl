@@ -281,7 +281,7 @@ function capacite_end_newFiles(nbre_pas_tps, Itineraires, alpha, proba, leg_to_i
         proba_actuelle = proba[i]
         demande_per = lecture_demande_newFiles(Demande, Itineraires, proba_actuelle)
         Capa = calcul_capa_restante_newFiles(Capa, Itineraires, i, demande_per, leg_to_it)
-        append!(Personne, demande_per)
+        append!(Personne, [demande_per])
     end
     return Capa, Personne
 end
